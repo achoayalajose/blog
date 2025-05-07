@@ -12,6 +12,18 @@ use App\Models\Archivo;
 
 class PostController extends Controller
 {
+    public function postsView(Request $request){
+        
+        $posts = [];
+        if(isset($request->post_id)){
+            $posts = Post::where('id', $request->post_id)->get();
+        }else{
+            $posts = Post::all();
+        }
+
+        return $posts;
+
+    }
     //
     public function index(){
         $posts = Post::all();

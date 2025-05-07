@@ -21,11 +21,15 @@ Route::get('/prueba', function (Request $request){
 // UPDATE ==> PUT
 // DELETE ==> DELETE
 
+Route::get('/posts/views', [PostController::class, 'postsView']);
+
 Route::get('/posts', [PostController::class, 'index']);
-Route::get('/posts/{id}', [PostController::class, 'show'])->middleware('jwt');
+Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::post('/posts-crear', [PostController::class, 'create']);
 Route::put('/posts-update', [PostController::class, 'update']);
 Route::delete('/posts-eliminar/{id}', [PostController::class, 'destroy']);
+
+
 
 
 // Route::post('/register', [AuthController::class, 'register']);
