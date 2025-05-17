@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\JwtMiddleware;
+use App\Http\Middleware\CheckRol;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
         $middleware->alias([
-            'jwt' => JwtMiddleware::class
+            'jwt' => JwtMiddleware::class,
+            'checkRol' => CheckRol::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

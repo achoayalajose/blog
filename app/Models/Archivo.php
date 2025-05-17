@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Archivo extends Model
 {
@@ -17,4 +18,8 @@ class Archivo extends Model
         'created_at',
         'update_at'
     ];
+
+    public function post(){
+        return $this->belongsTo(Post::class, 'post_id','id');
+    }
 }

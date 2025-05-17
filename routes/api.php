@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,7 +22,8 @@ Route::get('/prueba', function (Request $request){
 // UPDATE ==> PUT
 // DELETE ==> DELETE
 
-Route::get('/posts/views', [PostController::class, 'postsView']);
+Route::get('/posts/views', [PostController::class, 'postsView'])->middleware(['jwt','checkRol:cliente|editor|admin']);
+Route::post('/posts/create-update', [PostController::class, 'createUpdate'])->middleware(['jwt','checkRol:editor']);
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
