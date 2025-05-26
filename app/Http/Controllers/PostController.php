@@ -34,37 +34,22 @@ class PostController extends Controller
             $posts[0]->delete();
             return ['mensaje' => 'se elimino el post'];
         }
-
-        foreach ($posts as $post) {
-            $archivos = $post->archivos;
-            $archivos_response = [];
-
-            if(!$archivos->isEmpty()){
-                foreach($archivos as $archivo){
-                    $archivos_response []= [
-                        'archivo' => asset('storage/' . $archivo->archivo),
-                        'tipo' => $archivo->tipo
-                    ];
-                }
-            }
-
-            $post_response []= [
-                'id' => $post->id,
-                'titulo_post' =>  $post->titulo,
-                'contenido' => $post->contenido,
-                'editor' =>  $post->editor_id,
-                'archivos' =>   $archivos_response
-            ];
-        }
-        return $post_response;
+       
+        return $this->responsePost($posts);
 
     }
 
     public function createUpdate(Request $request){
         $post = Post::find($request->post_id) ?? new Post;
+
+        if($post->exists && auth()->user()->id != $post->editor_id){
+            return ['error' => 'no puede editar este post'];
+        }
+        
         $post->titulo = $request->titulo_post;
         $post->contenido = $request->contenido;
-        $post->editor_id = $request->editor;
+        // $post->editor_id = $request->editor;
+        $post->editor_id = auth()->user()->id;
         $post->save();
         foreach($request->archivos as $archivo){
 
@@ -83,15 +68,7 @@ class PostController extends Controller
             
         }
 
-        $response = [
-            'id' => $post->id,
-            'titulo_post' => $post->titulo,
-            'contenido' => $post->contenido,
-            'editor' => $post->editor_id,
-            'archivos' => $archivos_response
-        ];
-        
-        return $response;
+        return $this->responsePost([$post]);
     }
     //
     public function index(){
@@ -149,7 +126,7 @@ class PostController extends Controller
     public function update(Request $request){
         $post = Post::find($request->post_id);
         if(!isset($post)){
-            return ['error' => 'no existe el post con el id ' . $id];    
+            return ['error' => 'no existe el post con el id ' . $post->id];    
         }
         
         $post->titulo = $request->titulo_post;
@@ -178,4 +155,48 @@ class PostController extends Controller
         $post->delete();
         return ['mensaje' => 'se elimino el post'];
     }
+
+    private function responsePost($posts){
+        $is_one_post = count($posts) == 1;
+        foreach ($posts as $post) {
+            $archivos = $post->archivos;
+            $archivos_response = [];
+
+            if(!$archivos->isEmpty()){
+                foreach($archivos as $archivo){
+                    $archivos_response []= [
+                        'archivo' => asset('storage/' . $archivo->archivo),
+                        'tipo' => $archivo->tipo
+                    ];
+                }
+            }
+
+            $comentarios = [];
+            if($is_one_post && !$post->comentarios->isEmpty()){
+                dd($post->comentarios->isEmpty());
+            }
+
+            $post_response []= [
+                'id' => $post->id,
+                'titulo_post' =>  $post->titulo,
+                'contenido' => $post->contenido,
+                'editor' =>  $post->editor_id,
+                'archivos' =>   $archivos_response,
+                'comentarios' => $comentarios
+            ];
+
+        }
+
+        // if(){
+        //     $post_response[0]['comentarios'] = [
+        //         [
+        //             'user_id' => 1,
+        //             'user_name' => 'jose',
+        //             'comentario' => 'genial'
+        //         ]
+        //     ];
+        // }
+        return $post_response;
+    }
+
 }

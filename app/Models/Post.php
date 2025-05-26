@@ -22,4 +22,8 @@ class Post extends Model
     public function archivos(){
         return $this->hasMany(Archivo::class, 'post_id', 'id');
     }
+
+    public function comentarios(){
+        return $this->hasMany(Comentario::class, 'post_id', 'id');
+    }
 }
