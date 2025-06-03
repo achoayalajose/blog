@@ -11,7 +11,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-// http://127.0.0.1:8000/api/prueba   //endpoint
 Route::get('/prueba', function (Request $request){
     return 'hola mundo';
 });
@@ -23,11 +22,11 @@ Route::get('/prueba', function (Request $request){
 // UPDATE ==> PUT
 // DELETE ==> DELETE
 
-Route::get('/posts/views', [PostController::class, 'postsView'])->middleware(['jwt','checkRol:cliente|editor|admin']);
-Route::post('/posts/create-update', [PostController::class, 'createUpdate'])->middleware(['jwt','checkRol:editor']);
+// Route::get('/posts/views', [PostController::class, 'postsView'])->middleware(['jwt','checkRol:cliente|editor|admin']);
+// Route::post('/posts/create-update', [PostController::class, 'createUpdate'])->middleware(['jwt','checkRol:editor']);
 
-// Route::get('/posts/views', [PostController::class, 'postsView']);
-// Route::post('/posts/create-update', [PostController::class, 'createUpdate']);
+Route::get('/posts/views', [PostController::class, 'postsView']);
+Route::post('/posts/create-update', [PostController::class, 'createUpdate']);
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);

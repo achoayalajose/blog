@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Models\Rol;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,17 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'Could not create token'], 500);
         }
+        
+        $user = JWTAuth::user();
+        $rol = Rol::find($user->rol_id);
 
-        return ['token_jwt' => $token];
+        return [
+            'token_jwt' => $token,
+            'user' => [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'rol' => $rol->rol,
+            ],
+        ];
     }
 }

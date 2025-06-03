@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-
+use App\Models\User;
 use App\Models\Post;
 use App\Models\Archivo;
 
@@ -41,7 +41,6 @@ class PostController extends Controller
 
     public function createUpdate(Request $request){
         $post = Post::find($request->post_id) ?? new Post;
-
         if($post->exists && auth()->user()->id != $post->editor_id){
             return ['error' => 'no puede editar este post'];
         }
@@ -173,7 +172,14 @@ class PostController extends Controller
 
             $comentarios = [];
             if($is_one_post && !$post->comentarios->isEmpty()){
-                dd($post->comentarios->isEmpty());
+                $comentarios = $post->comentarios->map(function ($comentario) {
+                                $lector = User::find($comentario->lector_id);
+                                    return [
+                                        'id' => $comentario->id,
+                                        'contenido' => $comentario->contenido,
+                                        'lector' => $lector->email,
+                                    ];
+                                })->toArray();
             }
 
             $post_response []= [
