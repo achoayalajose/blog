@@ -1,4 +1,4 @@
-# Proyecto de Grado
+# Proyecto del curso DEL CODIGO AL SISTEMA
 
 Este es un proyecto Laravel. Sigue los siguientes pasos para instalar y ejecutar la aplicación en tu entorno local.
 
